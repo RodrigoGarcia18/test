@@ -161,6 +161,124 @@
           perspective: 1000px;
         }
 
+        #flower-page {
+          position: relative;
+          width: 100%;
+          min-height: 100vh;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: flex-end;
+          padding: 40px 20px 0;
+          gap: 24px;
+        }
+
+        .card-wrapper {
+          position: relative;
+          width: 100%;
+          max-width: 880px;
+          margin: 32px auto 0;
+          padding: 0 12px;
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          gap: 20px;
+          z-index: 5;
+          animation: cardGroupDrift 14s ease-in-out infinite;
+        }
+
+        .card-wrapper:hover,
+        .card-wrapper:focus-within {
+          animation-play-state: paused;
+        }
+
+        @keyframes cardGroupDrift {
+          0%,
+          100% {
+            transform: translate3d(0, 0, 0);
+          }
+          25% {
+            transform: translate3d(-6px, -10px, 0);
+          }
+          50% {
+            transform: translate3d(8px, -18px, 0);
+          }
+          75% {
+            transform: translate3d(-4px, -12px, 0);
+          }
+        }
+
+        .message-card {
+          position: relative;
+          top: 0;
+          background: rgba(255, 255, 255, 0.12);
+          border: 2px solid rgba(255, 255, 255, 0.2);
+          border-radius: 18px;
+          padding: 18px 24px;
+          width: clamp(220px, 26vw, 280px);
+          color: #ffffff;
+          font-family: 'Poppins', cursive;
+          text-align: center;
+          line-height: 1.4;
+          letter-spacing: 1px;
+          cursor: pointer;
+          box-shadow: 0 12px 28px rgba(0, 0, 0, 0.45);
+          backdrop-filter: blur(6px);
+          -webkit-backdrop-filter: blur(6px);
+          transition: top 0.55s ease, transform 0.35s ease, box-shadow 0.35s ease, border-color 0.35s ease,
+            background 0.35s ease;
+          animation: cardBob var(--card-bob-duration, 9.2s) ease-in-out infinite;
+          animation-delay: var(--card-bob-delay, 0s);
+          will-change: top, transform;
+        }
+
+        @keyframes cardBob {
+          0%,
+          100% {
+            top: 0;
+          }
+          25% {
+            top: -14px;
+          }
+          50% {
+            top: -20px;
+          }
+          75% {
+            top: -8px;
+          }
+        }
+
+        .message-card:nth-child(2) {
+          --card-bob-duration: 8.6s;
+          --card-bob-delay: 0.9s;
+        }
+
+        .message-card:nth-child(3) {
+          --card-bob-duration: 7.8s;
+          --card-bob-delay: 0.45s;
+        }
+
+        .message-card p {
+          margin: 0;
+          font-size: 1rem;
+        }
+
+        .message-card:focus-visible {
+          outline: 3px solid rgba(255, 215, 0, 0.85);
+          outline-offset: 4px;
+        }
+
+        .message-card:hover,
+        .message-card--active,
+        .message-card:focus-visible {
+          animation-play-state: paused;
+          top: 0;
+          transform: translateY(-8px) scale(1.04);
+          box-shadow: 0 18px 36px rgba(255, 214, 0, 0.4);
+          border-color: rgba(255, 214, 0, 0.75);
+          background: rgba(255, 214, 0, 0.18);
+        }
+
         #lyrics {
           font-size: 28px;
           font-family: "Franklin Gothic Medium", "Arial Narrow", Arial, sans-serif;
@@ -176,6 +294,20 @@
               font-size: 14px;
               margin-bottom: 530px;
               letter-spacing: 3px;
+          }
+
+          .card-wrapper {
+              margin-top: 26px;
+              padding: 0 8px;
+              gap: 14px;
+              animation-duration: 18s;
+          }
+
+          .message-card {
+              width: 88vw;
+              padding: 16px 18px;
+              font-size: 0.95rem;
+              animation-duration: 10s;
           }
         }
         .titulo {
@@ -1831,6 +1963,18 @@
           <a href="#" id="flower-link">CLICK AQUÍ</a>
         </button>
       </div>
+
+      <div class="card-wrapper" aria-label="Cartas con mensajes especiales">
+        <div class="message-card" role="button" tabindex="0" aria-pressed="false">
+          <p>Perdon, esta vez sera por aqui, La proxima si sera presencial.</p>
+        </div>
+        <div class="message-card" role="button" tabindex="0" aria-pressed="false">
+          <p>Eres una gran persona y amiga cachetoncita.</p>
+        </div>
+        <div class="message-card" role="button" tabindex="0" aria-pressed="false">
+          <p>Haz almorzado y me deja hacerle llamadita?</p>
+        </div>
+      </div>
     </div>
 
     <!-- Página de la flor (oculta inicialmente) -->
@@ -2184,6 +2328,23 @@
             }, 300);
         }
         
+        const messageCards = document.querySelectorAll('.message-card');
+
+        function toggleCardSelection(card) {
+            const isActive = card.classList.toggle('message-card--active');
+            card.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        }
+
+        messageCards.forEach((card) => {
+            card.addEventListener('click', () => toggleCardSelection(card));
+            card.addEventListener('keydown', (event) => {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    toggleCardSelection(card);
+                }
+            });
+        });
+
         // Iniciar corazones flotantes
         createHearts();
 
